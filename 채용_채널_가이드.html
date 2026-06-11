@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채용 공고 채널 가이드</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e2e0d8;
+    --text: #1a1917;
+    --text-muted: #6b6860;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --orange: #ea580c;
+    --orange-light: #fff7ed;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --yellow: #ca8a04;
+    --yellow-light: #fefce8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar { width: 220px; min-width: 220px; background: var(--text); color: #e5e4e0; padding: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid #333; }
+  .sidebar-logo h1 { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-transform: uppercase; }
+  .sidebar-logo p { font-size: 11px; color: #888; margin-top: 2px; }
+  .sidebar-nav { padding: 12px 0; }
+  .nav-section { padding: 8px 20px 4px; font-size: 10px; font-weight: 700; color: #666; letter-spacing: 0.1em; text-transform: uppercase; }
+  .nav-item { display: block; padding: 7px 20px; font-size: 13px; color: #ccc; cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; text-decoration: none; }
+  .nav-item:hover, .nav-item.active { color: #fff; background: #2a2a2a; border-left-color: var(--accent); }
+  .main { flex: 1; padding: 32px 36px; max-width: 1100px; }
+
+  /* Header */
+  .page-header { margin-bottom: 32px; }
+  .page-header h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+  .page-header p { color: var(--text-muted); margin-top: 4px; font-size: 13px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; margin-bottom: 28px; background: var(--border); border-radius: 8px; padding: 3px; width: fit-content; }
+  .tab { padding: 7px 16px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: all 0.15s; color: var(--text-muted); border: none; background: none; }
+  .tab.active { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  /* Filter bar */
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .filter-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-right: 4px; }
+  .filter-btn { padding: 5px 12px; font-size: 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; transition: all 0.15s; color: var(--text-muted); }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-divider { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+  /* Channel Grid */
+  .channel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .channel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; transition: box-shadow 0.15s; }
+  .channel-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .card-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .card-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .card-title { font-size: 14px; font-weight: 700; }
+  .card-category { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.7; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .tag { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .tag-contract { background: var(--accent-light); color: var(--accent); }
+  .tag-duration { background: var(--green-light); color: var(--green); }
+  .tag-region { background: var(--purple-light); color: var(--purple); }
+  .tag-cost-free { background: var(--green-light); color: var(--green); }
+  .tag-cost-paid { background: var(--orange-light); color: var(--orange); }
+  .meta-row { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-key { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-val { font-size: 12px; font-weight: 500; }
+  .stars { color: #f59e0b; font-size: 12px; }
+  .hidden { display: none !important; }
+
+  /* Section headings in grid */
+  .section-heading { grid-column: 1 / -1; margin-top: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .section-heading h3 { font-size: 15px; font-weight: 700; }
+  .section-heading span { font-size: 12px; color: var(--text-muted); }
+
+  /* Comparison Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: var(--text); color: #fff; }
+  thead th { padding: 10px 12px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: 0.04em; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:hover { background: #fafaf8; }
+  tbody td { padding: 9px 12px; vertical-align: middle; }
+  .td-name { font-weight: 600; }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: #ccc; }
+  .partial { color: var(--yellow); }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+  .badge-free { background: var(--green-light); color: var(--green); }
+  .badge-paid { background: var(--orange-light); color: var(--orange); }
+  .badge-both { background: var(--yellow-light); color: var(--yellow); }
+
+  /* Matrix view */
+  .matrix { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  .matrix-header { display: grid; grid-template-columns: 180px repeat(4, 1fr); background: var(--text); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+  .matrix-header div, .matrix-row div { padding: 10px 12px; }
+  .matrix-row { display: grid; grid-template-columns: 180px repeat(4, 1fr); border-bottom: 1px solid var(--border); font-size: 12px; }
+  .matrix-row:last-child { border-bottom: none; }
+  .matrix-row:hover { background: #fafaf8; }
+  .matrix-row div { display: flex; align-items: center; }
+  .matrix-name { font-weight: 600; color: var(--text); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-strong { background: var(--green); }
+  .dot-medium { background: var(--yellow); }
+  .dot-weak { background: #d1d5db; }
+  .dot-label { margin-left: 5px; font-size: 11px; }
+
+  /* Tip box */
+  .tip-box { background: var(--accent-light); border: 1px solid #bfdbfe; border-radius: 8px; padding: 14px 16px; margin-top: 20px; font-size: 13px; }
+  .tip-box strong { color: var(--accent); }
+
+  /* Cost breakdown */
+  .cost-section { margin-top: 24px; }
+  .cost-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .cost-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .cost-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .cost-card-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .cost-card-price { font-size: 18px; font-weight: 800; color: var(--accent); }
+  .cost-card-unit { font-size: 11px; color: var(--text-muted); }
+  .cost-card-note { font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+  /* Page sections */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Strategy section */
+  .strategy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .strategy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .strategy-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .strategy-card p { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+  .strategy-card ul { margin-top: 8px; padding-left: 16px; }
+  .strategy-card ul li { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+  .contract-type-badge { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; }
+
+  /* Summary stats */
+  .stats-row { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+  .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; flex: 1; min-width: 120px; }
+  .stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { padding: 20px 16px; }
+    .channel-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>채용 채널 가이드</h1>
+      <p>Crowdworks HR</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">메뉴</div>
+      <a class="nav-item active" onclick="showPage('overview')">📊 전체 채널 개요</a>
+      <a class="nav-item" onclick="showPage('cards')">🗂 채널 카드 탐색</a>
+      <a class="nav-item" onclick="showPage('compare')">⚖️ 채널 비교표</a>
+      <a class="nav-item" onclick="showPage('matrix')">🎯 조건별 적합도 매트릭스</a>
+      <a class="nav-item" onclick="showPage('strategy')">💡 채용 전략 가이드</a>
+      <div class="nav-section" style="margin-top:16px">계약유형</div>
+      <a class="nav-item" onclick="filterAndGo('contract','정규직')">정규직</a>
+      <a class="nav-item" onclick="filterAndGo('contract','계약직')">계약직</a>
+      <a class="nav-item" onclick="filterAndGo('contract','프리랜서')">프리랜서 / 외주</a>
+      <a class="nav-item" onclick="filterAndGo('contract','인턴')">인턴십</a>
+      <div class="nav-section" style="margin-top:16px">계약기간</div>
+      <a class="nav-item" onclick="filterAndGo('duration','단기')">단기 (1~3개월)</a>
+      <a class="nav-item" onclick="filterAndGo('duration','중기')">중기 (3~12개월)</a>
+      <a class="nav-item" onclick="filterAndGo('duration','장기')">장기 (1년+)</a>
+      <div class="nav-section" style="margin-top:16px">채용 범위</div>
+      <a class="nav-item" onclick="filterAndGo('region','국내')">국내</a>
+      <a class="nav-item" onclick="filterAndGo('region','해외·외국인')">해외 / 외국인</a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- PAGE: Overview -->
+    <div id="page-overview" class="page active">
+      <div class="page-header">
+        <h2>채용 공고 채널 전체 개요</h2>
+        <p>계약유형 · 계약기간 · 국내외 범위별로 최적 채널을 한눈에 파악하세요</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">17</div><div class="stat-label">채널 분류</div></div>
+        <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">무료 주요 채널</div></div>
+        <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">계약 유형 커버</div></div>
+        <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">해외·외국인 특화</div></div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">채널 카테고리 맵</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">📣</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">광고 채널</div>
+          <div style="font-size:12px;color:var(--text-muted)">검색광고 · SNS · 유튜브 · 옥외광고<br>브랜드 인지도 + 대규모 모집에 유리</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">🏢</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">대형 취업 포털</div>
+          <div style="font-size:12px;color:var(--text-muted)">사람인 · 잡코리아 · 인크루트<br>국내 최다 지원자 DB 보유</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">💬</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">취업·직무 커뮤니티</div>
+          <div style="font-size:12px;color:var(--text-muted)">자소설닷컴 · 독취사 · 직무카페<br>신입·인턴 타겟에 강점</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">🎯</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">경력직 포털</div>
+          <div style="font-size:12px;color:var(--text-muted)">원티드 · 리멤버 · 잡플래닛 · 블라인드<br>경력직·이직자 네트워크</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">🎓</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">교육기관·박람회</div>
+          <div style="font-size:12px;color:var(--text-muted)">대학 메일링 · 취업박람회<br>신입·인턴 파이프라인 구축</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:20px;margin-bottom:6px">🔍</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">직접 소싱·내부</div>
+          <div style="font-size:12px;color:var(--text-muted)">Direct Sourcing · 사내추천 · 사내공모<br>서치펌 — 핵심 포지션에 집중</div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">계약유형 × 채널 추천 매핑</h3>
+      <table>
+        <thead><tr>
+          <th>채널</th>
+          <th>정규직</th>
+          <th>계약직</th>
+          <th>프리랜서</th>
+          <th>인턴</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="td-name">검색광고 (Google/Naver)</td><td><span class="check">●</span></td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">SNS / YouTube</td><td><span class="check">●</span></td><td><span class="check">●</span></td><td><span class="check">●</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">사람인 / 잡코리아</td><td><span class="check">●</span></td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">자소설닷컴 / 독취사</td><td><span class="partial">◐</span></td><td><span class="partial">◐</span></td><td><span class="cross">○</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">원티드 / 리멤버</td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="check">●</span></td><td><span class="cross">○</span></td></tr>
+          <tr><td class="td-name">잡플래닛 / 블라인드</td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="cross">○</span></td><td><span class="cross">○</span></td></tr>
+          <tr><td class="td-name">취업박람회</td><td><span class="partial">◐</span></td><td><span class="partial">◐</span></td><td><span class="cross">○</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">대학 메일링</td><td><span class="cross">○</span></td><td><span class="cross">○</span></td><td><span class="cross">○</span></td><td><span class="check">●</span></td></tr>
+          <tr><td class="td-name">사내추천</td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="partial">◐</span></td><td><span class="cross">○</span></td></tr>
+          <tr><td class="td-name">Direct Sourcing</td><td><span class="check">●</span></td><td><span class="partial">◐</span></td><td><span class="check">●</span></td><td><span class="cross">○</span></td></tr>
+          <tr><td class="td-name">서치펌</td><td><span class="check">●</span></td><td><span class="cross">○</span></td><td><span class="cross">○</span></td><td><span class="cross">○</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">● 매우 적합 &nbsp;◐ 부분 적합 &nbsp;○ 적합하지 않음</div>
+
+      <div class="tip-box" style="margin-top:24px">
+        <strong>💡 크라우드웍스 핵심 팁</strong><br>
+        대규모 데이터 가공 인력(단기·계약직) → <strong>사람인 공고 + SNS 광고 병행</strong>이 가장 비용 효율적.<br>
+        IT/AI 정규직 → <strong>원티드·리멤버 DB 서치 + LinkedIn Direct Sourcing</strong> 조합 권장.<br>
+        외국인 인력(F-4, E-7) → <strong>글로벌 포털(LinkedIn, Indeed Global) + 재외동포 커뮤니티</strong> 활용.
+      </div>
+    </div>
+
+    <!-- PAGE: Cards -->
+    <div id="page-cards" class="page">
+      <div class="page-header">
+        <h2>채널 카드 탐색</h2>
+        <p>필터를 사용해 조건에 맞는 채널을 찾으세요</p>
+      </div>
+      <div class="filter-bar">
+        <span class="filter-label">계약유형</span>
+        <button class="filter-btn active" onclick="setFilter('contract','all',this)">전체</button>
+        <button class="filter-btn" onclick="setFilter('contract','정규직',this)">정규직</button>
+        <button class="filter-btn" onclick="setFilter('contract','계약직',this)">계약직</button>
+        <button class="filter-btn" onclick="setFilter('contract','프리랜서',this)">프리랜서</button>
+        <button class="filter-btn" onclick="setFilter('contract','인턴',this)">인턴</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">기간</span>
+        <button class="filter-btn active" onclick="setFilter('duration','all',this)">전체</button>
+        <button class="filter-btn" onclick="setFilter('duration','단기',this)">단기</button>
+        <button class="filter-btn" onclick="setFilter('duration','중기',this)">중기</button>
+        <button class="filter-btn" onclick="setFilter('duration','장기',this)">장기</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">범위</span>
+        <button class="filter-btn active" onclick="setFilter('region','all',this)">전체</button>
+        <button class="filter-btn" onclick="setFilter('region','국내',this)">국내</button>
+        <button class="filter-btn" onclick="setFilter('region','해외·외국인',this)">해외·외국인</button>
+      </div>
+      <div class="channel-grid" id="cardGrid"></div>
+    </div>
+
+    <!-- PAGE: Compare -->
+    <div id="page-compare" class="page">
+      <div class="page-header">
+        <h2>채널 비교표</h2>
+        <p>주요 채널의 특성을 한 화면에서 비교하세요</p>
+      </div>
+      <div class="table-wrap">
+        <table id="compareTable">
+          <thead><tr>
+            <th>채널명</th>
+            <th>카테고리</th>
+            <th>비용</th>
+            <th>정규직</th>
+            <th>계약직</th>
+            <th>프리랜서</th>
+            <th>인턴</th>
+            <th>단기</th>
+            <th>중기</th>
+            <th>장기</th>
+            <th>국내</th>
+            <th>해외·외국인</th>
+            <th>주요 특징</th>
+          </tr></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: Matrix -->
+    <div id="page-matrix" class="page">
+      <div class="page-header">
+        <h2>조건별 적합도 매트릭스</h2>
+        <p>채용 조건에 따른 채널 효과 등급 (강 / 중 / 약)</p>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px"><span class="dot dot-strong"></span> 강 (적극 추천)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px"><span class="dot dot-medium"></span> 중 (조건부 추천)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px"><span class="dot dot-weak"></span> 약 (비추천)</div>
+      </div>
+      <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">계약유형별 채널 효과</h4>
+      <div class="matrix" style="margin-bottom:24px">
+        <div class="matrix-header">
+          <div>채널</div><div>정규직</div><div>계약직</div><div>프리랜서</div><div>인턴</div>
+        </div>
+        <div id="matrixContract"></div>
+      </div>
+      <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">계약기간별 채널 효과</h4>
+      <div class="matrix" style="margin-bottom:24px">
+        <div class="matrix-header">
+          <div>채널</div><div>단기 (1~3M)</div><div>중기 (3~12M)</div><div>장기 (1Y+)</div><div>무기한</div>
+        </div>
+        <div id="matrixDuration"></div>
+      </div>
+      <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">채용 범위별 채널 효과</h4>
+      <div class="matrix">
+        <div class="matrix-header">
+          <div>채널</div><div>국내 신입</div><div>국내 경력</div><div>해외 거주</div><div>국내 외국인</div>
+        </div>
+        <div id="matrixRegion"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: Strategy -->
+    <div id="page-strategy" class="page">
+      <div class="page-header">
+        <h2>채용 전략 가이드</h2>
+        <p>포지션 유형별 권장 채널 조합과 실무 팁</p>
+      </div>
+      <div class="strategy-grid" id="strategyGrid"></div>
+      <div class="cost-section">
+        <div class="cost-title">주요 채널 비용 가이드 (2025 기준)</div>
+        <div class="cost-cards" id="costCards"></div>
+      </div>
+      <div class="tip-box" style="margin-top:24px">
+        <strong>⚠️ 외국인 채용 시 필수 체크포인트</strong><br>
+        <span style="font-size:12px;line-height:1.8">
+          • <strong>E-7 (특정활동)</strong>: AI/데이터 전문직 — 법무부 고용허가 필요, 최저 급여 기준 있음<br>
+          • <strong>D-2 (유학)</strong>: 주 20시간 이내 아르바이트 가능 — 시간제 계약직 한정<br>
+          • <strong>F-4 (재외동포)</strong>: 취업 제한 거의 없음 — 사실상 내국인과 동일하게 채용 가능<br>
+          • <strong>F-2/F-5/F-6</strong>: 거주/영주/결혼이민 비자 — 취업 제한 없음<br>
+          • 외국인 근로자 채용 시 <strong>고용노동부 신고</strong> 및 <strong>4대보험 가입</strong> 의무 확인 필수
+        </span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ================= DATA =================
+const channels = [
+  {
+    id: 1, name: "Google 검색광고", category: "광고", icon: "🔍", iconBg: "#eff6ff",
+    desc: "Google Ads를 통한 채용 키워드 광고. '데이터 라벨러 채용' 등 직접 검색자를 타겟팅. 클릭당 과금(CPC) 방식으로 예산 조정이 용이.",
+    contracts: ["정규직","계약직","프리랜서","인턴"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "유료", costNote: "CPC 300~2,000원/클릭",
+    effectiveness: { 정규직:2, 계약직:3, 프리랜서:2, 인턴:2, 단기:3, 중기:2, 장기:2, 국내:3, 해외:2 },
+    pros: ["즉각적인 노출", "예산 탄력 조정", "글로벌 타겟 가능"],
+    cons: ["클릭 비용 누적", "지원 품질 편차"],
+    contractMatch: ["정규직","계약직","프리랜서","인턴"],
+    durationMatch: ["단기","중기","장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 2, name: "네이버 검색광고", category: "광고", icon: "🟢", iconBg: "#f0fdf4",
+    desc: "네이버 파워링크 및 브랜드 검색광고. 국내 검색 점유율 1위. '알바 구인', '채용공고' 검색 트래픽 활용. 네이버 카페·블로그와 연계 효과.",
+    contracts: ["정규직","계약직","프리랜서","인턴"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "CPC 500~3,000원/클릭",
+    effectiveness: { 정규직:2, 계약직:3, 프리랜서:2, 인턴:3, 단기:3, 중기:3, 장기:2, 국내:3, 해외:1 },
+    pros: ["국내 최대 트래픽", "알바·단기직 효과적", "카페 커뮤니티 연계"],
+    cons: ["국내 한정", "모바일 경쟁 심화"],
+    contractMatch: ["정규직","계약직","인턴"], durationMatch: ["단기","중기"], regionMatch: ["국내"]
+  },
+  {
+    id: 3, name: "SNS 광고 (인스타그램/페이스북)", category: "광고", icon: "📱", iconBg: "#fdf4ff",
+    desc: "Meta Ads Manager로 연령·직업·관심사 기반 타겟팅. 비주얼 중심 채용 브랜딩에 효과적. 릴스·스토리 포맷으로 젊은 층 도달.",
+    contracts: ["계약직","프리랜서","인턴"],
+    durations: ["단기","중기"],
+    regions: ["국내","해외·외국인"],
+    cost: "유료", costNote: "CPM 3,000~8,000원 / CPC 200~800원",
+    effectiveness: { 정규직:1, 계약직:3, 프리랜서:3, 인턴:3, 단기:3, 중기:2, 장기:1, 국내:3, 해외:3 },
+    pros: ["정밀 타겟팅", "브랜딩 효과", "20~30대 도달 최고"],
+    cons: ["채용 의도 약한 수동적 수용자", "광고 피로도"],
+    contractMatch: ["계약직","프리랜서","인턴"], durationMatch: ["단기","중기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 4, name: "YouTube 광고", category: "광고", icon: "▶️", iconBg: "#fef2f2",
+    desc: "유튜브 인스트림/범퍼 광고로 채용 브랜딩 영상 노출. 회사 문화·복지를 영상으로 전달. 직무별 타겟 채널 스폰서십 병행 가능.",
+    contracts: ["정규직","계약직","인턴"],
+    durations: ["중기","장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "유료", costNote: "CPV 30~150원/조회",
+    effectiveness: { 정규직:2, 계약직:2, 프리랜서:1, 인턴:3, 단기:1, 중기:2, 장기:3, 국내:3, 해외:2 },
+    pros: ["고관여 채용 브랜딩", "글로벌 도달", "채용 영상 최적 포맷"],
+    cons: ["즉각 지원 전환 낮음", "콘텐츠 제작 비용"],
+    contractMatch: ["정규직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 5, name: "옥외광고 (OOH)", category: "광고", icon: "🏙️", iconBg: "#fffbeb",
+    desc: "지하철·버스·빌보드 광고. 대규모 인원 모집 시 브랜드 인지도 극대화. 특정 지역·직군(예: 구로디지털단지 IT) 밀집 지역 집중 게재 가능.",
+    contracts: ["계약직","인턴"],
+    durations: ["단기","중기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "지하철역 1개월 200~500만원",
+    effectiveness: { 정규직:1, 계약직:2, 프리랜서:1, 인턴:2, 단기:2, 중기:2, 장기:1, 국내:3, 해외:1 },
+    pros: ["대규모 브랜딩", "지역 집중 노출", "오프라인 신뢰감"],
+    cons: ["ROI 측정 어려움", "높은 비용", "단방향 소통"],
+    contractMatch: ["계약직","인턴"], durationMatch: ["단기","중기"], regionMatch: ["국내"]
+  },
+  {
+    id: 6, name: "사람인", category: "대형 취업 포털", icon: "🟠", iconBg: "#fff7ed",
+    desc: "국내 최대 취업 포털 중 하나. 신입부터 경력까지 폭넓은 DB. 이력서 검색·공고 게재 모두 가능. AI 매칭 기능 제공. 알바천국과 연계.",
+    contracts: ["정규직","계약직","인턴"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내"],
+    cost: "무료/유료", costNote: "공고 게재 무료 + DB 검색 유료",
+    effectiveness: { 정규직:3, 계약직:3, 프리랜서:2, 인턴:3, 단기:2, 중기:3, 장기:3, 국내:3, 해외:1 },
+    pros: ["최다 지원자 DB", "공고 무료 게재", "다양한 직군 커버"],
+    cons: ["스팸 지원 다수", "경쟁 공고 많음"],
+    contractMatch: ["정규직","계약직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 7, name: "잡코리아", category: "대형 취업 포털", icon: "🔵", iconBg: "#eff6ff",
+    desc: "사람인과 양대 포털. 대기업·중견기업 공채 이미지 강함. 잡코리아 Resume DB 검색 서비스, AI 추천 기능. 알바몬과 연계로 단기 인력도 커버.",
+    contracts: ["정규직","계약직","인턴"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내"],
+    cost: "무료/유료", costNote: "공고 게재 무료 + DB 검색 유료",
+    effectiveness: { 정규직:3, 계약직:3, 프리랜서:1, 인턴:3, 단기:2, 중기:3, 장기:3, 국내:3, 해외:1 },
+    pros: ["대기업 이미지 연계", "공채 채용 강점", "알바몬 단기 연계"],
+    cons: ["IT 스타트업 이미지 약함"],
+    contractMatch: ["정규직","계약직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 8, name: "인크루트", category: "대형 취업 포털", icon: "🟡", iconBg: "#fefce8",
+    desc: "공채 중심 플랫폼. 그룹사 공채 시즌에 강세. AI 자소서 분석 서비스 제공. 중소·중견기업 이미지. 무료 공고 게재 기본 제공.",
+    contracts: ["정규직","계약직","인턴"],
+    durations: ["중기","장기"],
+    regions: ["국내"],
+    cost: "무료/유료", costNote: "기본 게재 무료",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:1, 인턴:3, 단기:1, 중기:3, 장기:3, 국내:3, 해외:1 },
+    pros: ["공채 특화", "AI 자소서 필터", "무료 공고"],
+    cons: ["사람인/잡코리아 대비 DB 규모 작음"],
+    contractMatch: ["정규직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 9, name: "자소설닷컴", category: "취업·직무 커뮤니티", icon: "📝", iconBg: "#f0fdf4",
+    desc: "대기업 공채 준비생 중심 커뮤니티 + 채용 플랫폼. 자기소개서 공유, 채용 정보 공유 문화. 신입 공채 공고 노출 효과 높음. 무료 공고 게재.",
+    contracts: ["정규직","인턴"],
+    durations: ["중기","장기"],
+    regions: ["국내"],
+    cost: "무료", costNote: "기본 공고 무료",
+    effectiveness: { 정규직:2, 계약직:1, 프리랜서:1, 인턴:3, 단기:1, 중기:2, 장기:2, 국내:3, 해외:1 },
+    pros: ["신입 타겟 최적", "무료 공고", "커뮤니티 입소문"],
+    cons: ["계약직·경력직 부적합"],
+    contractMatch: ["정규직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 10, name: "독취사 / 취준생 카페", category: "취업·직무 커뮤니티", icon: "☕", iconBg: "#fdf4ff",
+    desc: "네이버 카페 기반 취업 준비 커뮤니티(독하게 취업 사관학교 등). 공채 정보 공유, 스터디 모집 활발. 공고 홍보 게시 가능(유료 협의).",
+    contracts: ["정규직","인턴"],
+    durations: ["중기","장기"],
+    regions: ["국내"],
+    cost: "무료/협의", costNote: "공고 게시 무료~소정 협의",
+    effectiveness: { 정규직:2, 계약직:1, 프리랜서:1, 인턴:3, 단기:1, 중기:2, 장기:2, 국내:3, 해외:1 },
+    pros: ["취준생 밀집", "입소문 효과", "비용 낮음"],
+    cons: ["관리 비용(게시 모니터링)", "비공식 채널"],
+    contractMatch: ["정규직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 11, name: "직무 카페 / 슬랙 커뮤니티", category: "취업·직무 커뮤니티", icon: "🛠️", iconBg: "#eff6ff",
+    desc: "직군별 네이버 카페·슬랙 커뮤니티(개발자 오픈 채팅, 데이터분석가 카페 등). 특정 직무 전문가 집중 도달. 무료 또는 소정 비용.",
+    contracts: ["정규직","계약직","프리랜서"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내"],
+    cost: "무료", costNote: "대부분 무료 게시",
+    effectiveness: { 정규직:2, 계약직:3, 프리랜서:3, 인턴:1, 단기:3, 중기:2, 장기:2, 국내:3, 해외:1 },
+    pros: ["직무 전문가 타겟", "무료", "프리랜서 채용 효과적"],
+    cons: ["채널 난립으로 분산", "공식성 낮음"],
+    contractMatch: ["계약직","프리랜서"], durationMatch: ["단기","중기"], regionMatch: ["국내"]
+  },
+  {
+    id: 12, name: "원티드 (Wanted)", category: "경력직 포털", icon: "🎯", iconBg: "#fef2f2",
+    desc: "IT/스타트업 경력직 특화. 성과보상형 채용(합격 시 추천인 보상). AI 매칭으로 수동적 구직자 도달. 공고 무료 게재. 스타트업 채용 필수 채널.",
+    contracts: ["정규직","계약직","프리랜서"],
+    durations: ["중기","장기"],
+    regions: ["국내"],
+    cost: "무료/성과", costNote: "공고 무료 + 채용 성공 시 보상금",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:2, 인턴:1, 단기:1, 중기:3, 장기:3, 국내:3, 해외:1 },
+    pros: ["IT/AI 직군 최강", "공고 무료", "AI 매칭 패시브 지원자"],
+    cons: ["채용 성공 보상 발생", "신입 적합도 낮음"],
+    contractMatch: ["정규직","계약직"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 13, name: "리멤버 (Remember)", category: "경력직 포털", icon: "💼", iconBg: "#f0fdf4",
+    desc: "명함 기반 직장인 네트워크. 실명 프로필로 경력직 DB 품질 높음. 채용 DM 발송 기능. 3~7년차 경력직 채용에 특히 효과적.",
+    contracts: ["정규직"],
+    durations: ["장기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "채용 DM 건당 과금",
+    effectiveness: { 정규직:3, 계약직:1, 프리랜서:1, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:3, 해외:1 },
+    pros: ["실명 고품질 DB", "경력직 핵심", "DM 응답률 높음"],
+    cons: ["유료 비용 높음", "신입·단기 부적합"],
+    contractMatch: ["정규직"], durationMatch: ["장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 14, name: "잡플래닛", category: "경력직 포털", icon: "🌍", iconBg: "#fffbeb",
+    desc: "기업 리뷰 + 채용 플랫폼. 이직 고려자가 주 사용층. 급여·면접 후기 기반 신뢰도 높음. 이직 의향 있는 잠재 지원자에게 효과적.",
+    contracts: ["정규직"],
+    durations: ["장기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "공고 게재 유료",
+    effectiveness: { 정규직:3, 계약직:1, 프리랜서:1, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:3, 해외:1 },
+    pros: ["이직 의향자 타겟", "기업 신뢰도 연계", "자연 유입 가능"],
+    cons: ["부정 리뷰 노출 리스크"],
+    contractMatch: ["정규직"], durationMatch: ["장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 15, name: "블라인드 (Blind)", category: "경력직 포털", icon: "🕶️", iconBg: "#f5f3ff",
+    desc: "직장인 익명 커뮤니티. 채용 공고 게재 및 채용 광고 가능. 회사 재직자 이직 의향층 밀집. IT·대기업 직군 도달력 강함.",
+    contracts: ["정규직"],
+    durations: ["장기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "채용 광고 유료",
+    effectiveness: { 정규직:3, 계약직:1, 프리랜서:1, 인턴:1, 단기:1, 중기:1, 장기:3, 국내:3, 해외:1 },
+    pros: ["현직자 이직 의향층", "IT/대기업 타겟", "광고 노출 강"],
+    cons: ["익명 문화로 브랜딩 리스크", "비용 높음"],
+    contractMatch: ["정규직"], durationMatch: ["장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 16, name: "LinkedIn", category: "경력직 포털", icon: "🔗", iconBg: "#eff6ff",
+    desc: "글로벌 1위 직장인 네트워크. 국내 외에도 해외·외국인 채용 필수 채널. Job Posting + InMail 스카우팅 병행. AI/데이터 글로벌 인재 접근.",
+    contracts: ["정규직","계약직","프리랜서"],
+    durations: ["중기","장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "무료/유료", costNote: "공고 무료 + Recruiter 라이선스 유료",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:2, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:2, 해외:3 },
+    pros: ["해외 인재 필수", "글로벌 AI/IT 인재", "InMail 스카우팅"],
+    cons: ["국내 활성 사용자 제한적", "Recruiter 비용 高"],
+    contractMatch: ["정규직","계약직"], durationMatch: ["중기","장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 17, name: "취업박람회 (대학·직무·업종)", category: "박람회·교육기관", icon: "🎪", iconBg: "#fdf4ff",
+    desc: "대학 취업박람회, 직무박람회(코드게이트, AI 엑스포), 업종별 박람회. 면대면 브랜딩 + 즉석 인터뷰 가능. 신입·인턴 대량 모집에 효과적.",
+    contracts: ["정규직","계약직","인턴"],
+    durations: ["단기","중기","장기"],
+    regions: ["국내"],
+    cost: "유료", costNote: "부스 참가비 50~200만원",
+    effectiveness: { 정규직:2, 계약직:2, 프리랜서:1, 인턴:3, 단기:2, 중기:3, 장기:2, 국내:3, 해외:1 },
+    pros: ["즉석 면접 가능", "브랜드 노출", "대학 신입 파이프라인"],
+    cons: ["특정 시기 한정", "준비 공수 많음"],
+    contractMatch: ["정규직","계약직","인턴"], durationMatch: ["중기","장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 18, name: "대학 메일링 / 취업지원팀", category: "박람회·교육기관", icon: "🎓", iconBg: "#f0fdf4",
+    desc: "대학 취업지원팀 통해 재학생·졸업생에게 채용 메일 발송. 서울권·지방 대학 직접 컨택. 무료~소정 비용. 인턴 모집에 최적화.",
+    contracts: ["인턴","계약직"],
+    durations: ["단기","중기"],
+    regions: ["국내"],
+    cost: "무료", costNote: "대부분 무료 (학교별 상이)",
+    effectiveness: { 정규직:1, 계약직:2, 프리랜서:1, 인턴:3, 단기:3, 중기:2, 장기:1, 국내:3, 해외:1 },
+    pros: ["인턴 필수 채널", "무료", "학교 신뢰도 활용"],
+    cons: ["연중 시기 한정 (학기제)", "담당자 컨택 공수"],
+    contractMatch: ["인턴","계약직"], durationMatch: ["단기","중기"], regionMatch: ["국내"]
+  },
+  {
+    id: 19, name: "사내추천 (Employee Referral)", category: "내부·직접", icon: "👥", iconBg: "#fef2f2",
+    desc: "재직 직원이 지인을 추천하는 채용. 문화 핏·직무 역량 검증이 선행된 지원자. 입사 후 이탈률이 일반 채용 대비 낮음. 추천 인센티브로 동기 부여.",
+    contracts: ["정규직","계약직"],
+    durations: ["중기","장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "내부비용", costNote: "추천 인센티브 50~200만원",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:1, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:3, 해외:2 },
+    pros: ["문화핏 사전 검증", "이탈률 낮음", "채용 속도 빠름"],
+    cons: ["조직 다양성 저하 가능", "추천 인원 한계"],
+    contractMatch: ["정규직","계약직"], durationMatch: ["중기","장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 20, name: "사내공모 (Internal Mobility)", category: "내부·직접", icon: "🔄", iconBg: "#fffbeb",
+    desc: "기존 재직자 대상 직무·부서 이동 공모. 이미 검증된 인재 활용. 외부 채용 병행 전 내부 우선 검토. 직원 성장 경로 제공으로 리텐션 효과.",
+    contracts: ["정규직"],
+    durations: ["장기"],
+    regions: ["국내"],
+    cost: "무료", costNote: "별도 비용 없음",
+    effectiveness: { 정규직:3, 계약직:1, 프리랜서:1, 인턴:1, 단기:1, 중기:1, 장기:3, 국내:3, 해외:1 },
+    pros: ["비용 없음", "즉시 전력", "직원 만족도 향상"],
+    cons: ["신규 역량 유입 없음", "원 팀 공백 발생"],
+    contractMatch: ["정규직"], durationMatch: ["장기"], regionMatch: ["국내"]
+  },
+  {
+    id: 21, name: "Direct Sourcing", category: "내부·직접", icon: "🎣", iconBg: "#f0fdf4",
+    desc: "LinkedIn, GitHub, 기술 블로그 등에서 HR/채용담당자가 직접 후보자를 발굴·접촉. 잠재적 비구직자 접근 가능. AI/데이터 전문 인재에 특히 효과적.",
+    contracts: ["정규직","계약직","프리랜서"],
+    durations: ["중기","장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "내부공수", costNote: "툴 비용 (LinkedIn Recruiter 등)",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:3, 인턴:1, 단기:2, 중기:3, 장기:3, 국내:3, 해외:3 },
+    pros: ["비구직자 접근", "핵심 포지션 강력", "글로벌 인재 가능"],
+    cons: ["담당자 시간 비용 큼", "응답률 낮을 수 있음"],
+    contractMatch: ["정규직","계약직","프리랜서"], durationMatch: ["중기","장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 22, name: "서치펌 / 헤드헌팅", category: "내부·직접", icon: "🕵️", iconBg: "#f5f3ff",
+    desc: "전문 헤드헌팅 업체에 채용 의뢰. C-레벨·핵심 전문직 포지션에 특화. 연봉의 15~30%를 성과 수수료로 지급. 채용 시간 단축 효과.",
+    contracts: ["정규직"],
+    durations: ["장기"],
+    regions: ["국내","해외·외국인"],
+    cost: "성과수수료", costNote: "채용 연봉의 15~30%",
+    effectiveness: { 정규직:3, 계약직:1, 프리랜서:1, 인턴:1, 단기:1, 중기:1, 장기:3, 국내:3, 해외:2 },
+    pros: ["핵심 인재 빠른 확보", "C레벨·고급 기술직 전문", "광범위한 네트워크"],
+    cons: ["수수료 매우 높음", "계약직·단기 불가"],
+    contractMatch: ["정규직"], durationMatch: ["장기"], regionMatch: ["국내","해외·외국인"]
+  },
+  {
+    id: 23, name: "Indeed / 글로벌 포털", category: "해외·외국인 특화", icon: "🌐", iconBg: "#eff6ff",
+    desc: "글로벌 최대 구인구직 플랫폼 Indeed, Glassdoor 등. 해외 거주 인재 또는 국내 외국인(F-4, E-7 등) 채용 시 효과적. 무료 공고 게재 기본 제공.",
+    contracts: ["정규직","계약직","프리랜서"],
+    durations: ["중기","장기"],
+    regions: ["해외·외국인"],
+    cost: "무료/유료", costNote: "기본 게재 무료",
+    effectiveness: { 정규직:2, 계약직:2, 프리랜서:2, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:1, 해외:3 },
+    pros: ["해외 인재 접근", "무료 게재", "다국어 지원"],
+    cons: ["국내 인재 커버리지 낮음"],
+    contractMatch: ["정규직","계약직","프리랜서"], durationMatch: ["중기","장기"], regionMatch: ["해외·외국인"]
+  },
+  {
+    id: 24, name: "재외동포 커뮤니티 / F-4 채널", category: "해외·외국인 특화", icon: "🇰🇷", iconBg: "#fef2f2",
+    desc: "재외동포(F-4 비자) 대상 커뮤니티 및 채널. 한국어 가능 + 글로벌 역량 겸비 인재. 비자 이슈 최소화. 재외동포재단, 미주 한인 커뮤니티 등 활용.",
+    contracts: ["정규직","계약직"],
+    durations: ["중기","장기"],
+    regions: ["해외·외국인"],
+    cost: "무료/소정", costNote: "커뮤니티 게시 무료~소정",
+    effectiveness: { 정규직:3, 계약직:2, 프리랜서:2, 인턴:1, 단기:1, 중기:2, 장기:3, 국내:1, 해외:3 },
+    pros: ["F-4 비자 취업 제한 없음", "한국어+글로벌 강점", "비자 리스크 낮음"],
+    cons: ["채널 파편화", "규모 제한"],
+    contractMatch: ["정규직","계약직"], durationMatch: ["중기","장기"], regionMatch: ["해외·외국인"]
+  }
+];
+
+// ================= STATE =================
+let filters = { contract: 'all', duration: 'all', region: 'all' };
+
+// ================= INIT =================
+document.addEventListener('DOMContentLoaded', () => {
+  renderCards();
+  renderCompare();
+  renderMatrix();
+  renderStrategy();
+  renderCosts();
+});
+
+// ================= NAVIGATION =================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event && event.target && event.target.classList.add('active');
+}
+
+function filterAndGo(type, value) {
+  filters[type] = value;
+  showPage('cards');
+  // update filter buttons
+  const btns = document.querySelectorAll(`[onclick^="setFilter('${type}'"]`);
+  btns.forEach(b => {
+    b.classList.remove('active');
+    if (b.getAttribute('onclick').includes(`'${value}'`)) b.classList.add('active');
+  });
+  renderCards();
+}
+
+// ================= FILTERS =================
+function setFilter(type, value, btn) {
+  filters[type] = value;
+  // reset buttons in same group
+  const allBtns = document.querySelectorAll(`[onclick^="setFilter('${type}'"]`);
+  allBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function matchesFilter(ch) {
+  const { contract, duration, region } = filters;
+  if (contract !== 'all' && !ch.contractMatch.includes(contract)) return false;
+  if (duration !== 'all' && !ch.durationMatch.includes(duration)) return false;
+  if (region !== 'all' && !ch.regionMatch.includes(region)) return false;
+  return true;
+}
+
+// ================= RENDER CARDS =================
+function renderCards() {
+  const grid = document.getElementById('cardGrid');
+  const filtered = channels.filter(matchesFilter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">조건에 맞는 채널이 없습니다.</div>';
+    return;
+  }
+
+  const byCategory = {};
+  filtered.forEach(ch => {
+    if (!byCategory[ch.category]) byCategory[ch.category] = [];
+    byCategory[ch.category].push(ch);
+  });
+
+  let html = '';
+  Object.entries(byCategory).forEach(([cat, chs]) => {
+    html += `<div class="section-heading"><h3>${cat}</h3><span>${chs.length}개 채널</span></div>`;
+    chs.forEach(ch => {
+      const costClass = ch.cost.startsWith('무료') ? 'tag-cost-free' : ch.cost.includes('성과') || ch.cost.startsWith('유료') ? 'tag-cost-paid' : 'tag-cost-free';
+      html += `
+        <div class="channel-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:${ch.iconBg}">${ch.icon}</div>
+            <div>
+              <div class="card-title">${ch.name}</div>
+              <div class="card-category">${ch.category}</div>
+            </div>
+          </div>
+          <div class="card-desc">${ch.desc}</div>
+          <div class="tag-row">
+            ${ch.contractMatch.map(c => `<span class="tag tag-contract">${c}</span>`).join('')}
+            ${ch.durationMatch.map(d => `<span class="tag tag-duration">${d}</span>`).join('')}
+            ${ch.regionMatch.map(r => `<span class="tag tag-region">${r}</span>`).join('')}
+          </div>
+          <div class="tag-row">
+            <span class="tag ${costClass}">${ch.cost}</span>
+            <span style="font-size:11px;color:var(--text-muted);padding:3px 0">${ch.costNote}</span>
+          </div>
+          <div style="margin-top:8px">
+            <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px">✓ 장점</div>
+            <div style="font-size:11px;color:var(--text-muted)">${ch.pros.join(' · ')}</div>
+          </div>
+          <div style="margin-top:6px">
+            <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px">✗ 단점</div>
+            <div style="font-size:11px;color:var(--text-muted)">${ch.cons.join(' · ')}</div>
+          </div>
+        </div>`;
+    });
+  });
+  grid.innerHTML = html;
+}
+
+// ================= RENDER COMPARE =================
+function renderCompare() {
+  const body = document.getElementById('compareBody');
+  const dot = (v) => v >= 3 ? '<span class="check">●</span>' : v === 2 ? '<span class="partial">◐</span>' : '<span class="cross">○</span>';
+  const costBadge = (c) => {
+    if (c.startsWith('무료')) return '<span class="badge badge-free">무료</span>';
+    if (c.includes('성과') || c.startsWith('유료') || c === '내부비용' || c === '내부공수') return '<span class="badge badge-paid">유료</span>';
+    return '<span class="badge badge-both">혼합</span>';
+  };
+  body.innerHTML = channels.map(ch => `
+    <tr>
+      <td class="td-name">${ch.icon} ${ch.name}</td>
+      <td style="font-size:11px">${ch.category}</td>
+      <td>${costBadge(ch.cost)}</td>
+      <td>${dot(ch.effectiveness.정규직)}</td>
+      <td>${dot(ch.effectiveness.계약직)}</td>
+      <td>${dot(ch.effectiveness.프리랜서)}</td>
+      <td>${dot(ch.effectiveness.인턴)}</td>
+      <td>${dot(ch.effectiveness.단기)}</td>
+      <td>${dot(ch.effectiveness.중기)}</td>
+      <td>${dot(ch.effectiveness.장기)}</td>
+      <td>${dot(ch.effectiveness.국내)}</td>
+      <td>${dot(ch.effectiveness.해외)}</td>
+      <td style="font-size:11px;color:var(--text-muted);max-width:200px">${ch.pros[0]}</td>
+    </tr>`).join('');
+}
+
+// ================= RENDER MATRIX =================
+function dotHtml(v) {
+  const cls = v >= 3 ? 'dot-strong' : v === 2 ? 'dot-medium' : 'dot-weak';
+  const lbl = v >= 3 ? '강' : v === 2 ? '중' : '약';
+  return `<span class="dot ${cls}"></span><span class="dot-label">${lbl}</span>`;
+}
+
+function renderMatrix() {
+  const contractEl = document.getElementById('matrixContract');
+  const durationEl = document.getElementById('matrixDuration');
+  const regionEl = document.getElementById('matrixRegion');
+
+  contractEl.innerHTML = channels.map(ch => `
+    <div class="matrix-row">
+      <div class="matrix-name">${ch.icon} ${ch.name}</div>
+      <div>${dotHtml(ch.effectiveness.정규직)}</div>
+      <div>${dotHtml(ch.effectiveness.계약직)}</div>
+      <div>${dotHtml(ch.effectiveness.프리랜서)}</div>
+      <div>${dotHtml(ch.effectiveness.인턴)}</div>
+    </div>`).join('');
+
+  durationEl.innerHTML = channels.map(ch => `
+    <div class="matrix-row">
+      <div class="matrix-name">${ch.icon} ${ch.name}</div>
+      <div>${dotHtml(ch.effectiveness.단기)}</div>
+      <div>${dotHtml(ch.effectiveness.중기)}</div>
+      <div>${dotHtml(ch.effectiveness.장기)}</div>
+      <div>${dotHtml(ch.effectiveness.장기)}</div>
+    </div>`).join('');
+
+  regionEl.innerHTML = channels.map(ch => `
+    <div class="matrix-row">
+      <div class="matrix-name">${ch.icon} ${ch.name}</div>
+      <div>${dotHtml(ch.effectiveness.국내 >= 3 && ch.effectiveness.인턴 >= 2 ? 3 : ch.effectiveness.국내)}</div>
+      <div>${dotHtml(ch.effectiveness.국내)}</div>
+      <div>${dotHtml(ch.effectiveness.해외)}</div>
+      <div>${dotHtml(ch.effectiveness.해외 >= 2 ? ch.effectiveness.해외 : 1)}</div>
+    </div>`).join('');
+}
+
+// ================= RENDER STRATEGY =================
+function renderStrategy() {
+  const strategies = [
+    {
+      emoji: '🤖', title: 'IT/AI 정규직 (핵심 포지션)',
+      tags: ['정규직','장기','국내+해외'],
+      desc: 'AI 엔지니어, 데이터 사이언티스트, PM 등 핵심 직군.',
+      channels: ['원티드 (무료 공고 + AI 매칭)', 'LinkedIn Direct Sourcing', '리멤버 DM 스카우팅', '사내추천 인센티브', '서치펌 (C레벨 한정)'],
+      tip: '원티드 무료 공고 → LinkedIn InMail 병행이 비용 효율 最高'
+    },
+    {
+      emoji: '📊', title: '데이터 라벨러·검수 인력 (대량 단기)',
+      tags: ['계약직','단기~중기','국내'],
+      desc: '크라우드웍스 핵심: 비정형 데이터 가공 단기 인력.',
+      channels: ['사람인 공고 (무료)', '네이버 검색광고', 'SNS 광고 (인스타 타겟팅)', '직무 카페·오픈채팅 무료 게시', '대학 메일링 (방학 기간)'],
+      tip: '사람인 무료 공고 + 인스타 광고 병행 시 단가 최저'
+    },
+    {
+      emoji: '🎓', title: '인턴십 모집',
+      tags: ['인턴','단기~중기','국내'],
+      desc: '학기 중/방학 중 인턴, AI 데이터 분야 학부생 타겟.',
+      channels: ['대학 취업지원팀 메일링 (무료)', '자소설닷컴 공고 (무료)', '취업박람회 부스 참가', '독취사·취준생 카페 게시', '사람인·잡코리아 인턴 섹션'],
+      tip: '3~4월, 6~7월 공고 타이밍이 지원자 최다'
+    },
+    {
+      emoji: '🌏', title: '외국인·글로벌 인재 채용',
+      tags: ['정규직·계약직','중기+','해외·외국인'],
+      desc: 'F-4(재외동포), E-7(특정활동), 외국인 AI 전문가.',
+      channels: ['LinkedIn (글로벌 필수)', 'Indeed 글로벌 무료 공고', '재외동포재단 채널', '한인 커뮤니티 (미주·동남아)', 'SNS 광고 (글로벌 타겟팅)'],
+      tip: 'F-4 비자자 우선 — 취업 제한 없고 한국어 소통 가능'
+    },
+    {
+      emoji: '💡', title: '경력직 이직자 (3~7년차)',
+      tags: ['정규직','장기','국내'],
+      desc: '현직 재직 중인 이직 의향자 타겟.',
+      channels: ['리멤버 DM 스카우팅', '잡플래닛 공고 게재', '블라인드 채용광고', 'LinkedIn', '사내추천'],
+      tip: '잡플래닛 기업 리뷰 관리 선행 필수 — 부정 리뷰 이직 장벽 됨'
+    },
+    {
+      emoji: '🔄', title: '프리랜서·외주 단기',
+      tags: ['프리랜서','단기','국내'],
+      desc: '데이터 전처리, 어노테이션 외주, 프로젝트 단위.',
+      channels: ['크몽·숨고 (프리랜서 플랫폼)', '원티드 프리랜서 공고', '직무 슬랙 커뮤니티', 'SNS 광고', 'LinkedIn 프리랜서 타겟'],
+      tip: '크몽/숨고는 AI 데이터 라벨링 카테고리 별도 존재'
+    }
+  ];
+
+  document.getElementById('strategyGrid').innerHTML = strategies.map(s => `
+    <div class="strategy-card">
+      <h4>${s.emoji} ${s.title}</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+        ${s.tags.map(t => `<span class="tag tag-contract" style="font-size:10px">${t}</span>`).join('')}
+      </div>
+      <p>${s.desc}</p>
+      <ul>${s.channels.map(c => `<li>${c}</li>`).join('')}</ul>
+      <div style="margin-top:10px;padding:8px;background:var(--accent-light);border-radius:6px;font-size:11px;color:var(--accent)">
+        💡 ${s.tip}
+      </div>
+    </div>`).join('');
+}
+
+// ================= RENDER COSTS =================
+function renderCosts() {
+  const costs = [
+    { name: '사람인 DB 검색', price: '월 30~100만원', unit: '플랜별', note: '이력서 직접 검색 기능. 공고 게재는 무료.' },
+    { name: '잡코리아 DB', price: '월 30~80만원', unit: '플랜별', note: '공고 무료 + 이력서 열람 유료.' },
+    { name: '원티드 채용 성공', price: '약 100만원+', unit: '채용 1건', note: '공고 게재 무료. 합격 시 추천인 보상 발생.' },
+    { name: '리멤버 DM', price: '건당 3~5천원', unit: '메시지 1건', note: '패키지 구매 방식. 100건 이상 구매 시 할인.' },
+    { name: 'LinkedIn Recruiter', price: '월 80~120만원', unit: '라이선스', note: 'InMail 150건/월 포함. 팀 라이선스 할인 가능.' },
+    { name: 'Google 검색광고', price: '예산 자유', unit: 'CPC 방식', note: '클릭당 300~2,000원. 월 50만원~로 시작 가능.' },
+    { name: 'Meta SNS 광고', price: '예산 자유', unit: 'CPM/CPC', note: '하루 1만원부터 가능. 타겟 정교화로 효율 제고.' },
+    { name: '취업박람회 부스', price: '50~200만원', unit: '1회', note: '대학 박람회는 50만원대, 대형 행사는 200만원+.' },
+    { name: '서치펌', price: '연봉의 15~30%', unit: '채용 성공 시', note: '연봉 5,000만원 채용 시 750만~1,500만원 수수료.' },
+    { name: '사내추천 인센티브', price: '50~200만원', unit: '채용 1건', note: '3~6개월 재직 후 지급하는 구조 권장.' },
+    { name: '대학 메일링', price: '무료', unit: '-', note: '대부분 무료. 일부 대학 소정 관리비 요청.' },
+    { name: '직무 커뮤니티', price: '무료', unit: '-', note: '카페 게시, 슬랙 공유 대부분 무료.' }
+  ];
+
+  document.getElementById('costCards').innerHTML = costs.map(c => `
+    <div class="cost-card">
+      <div class="cost-card-name">${c.name}</div>
+      <div class="cost-card-price">${c.price}</div>
+      <div class="cost-card-unit">${c.unit}</div>
+      <div class="cost-card-note">${c.note}</div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
